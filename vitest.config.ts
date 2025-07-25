@@ -1,8 +1,10 @@
 import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
+import {loadEnv} from "vite";
 import {fileURLToPath, URL} from "node:url";
 
-export default defineConfig((_) => {
+export default defineConfig(({ mode }) => {
+    const env = loadEnv(mode, process.cwd());
     return {
         plugins: [
             vue()
@@ -12,6 +14,7 @@ export default defineConfig((_) => {
                 '@': fileURLToPath(new URL('./src', import.meta.url)),
             },
         },
+        base: env.VITE_ROOT_PATH || '/',
         test: {
             globals: true,
             environment: 'jsdom',
@@ -25,7 +28,8 @@ export default defineConfig((_) => {
                     '**/*.d.ts',
                     '**/*.test.ts',
                     '**/*.config.ts',
-                    'coverage/**'
+                    'coverage/**',
+                    '**/env.*'
                 ]
             }
         }
