@@ -1,15 +1,12 @@
-name: SonarCloud
+name: Analyze Pull Request
 on:
-  push:
-    branches:
-      - main
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - main
 jobs:
-  sonarcloud:
-    name: SonarCloud
+  analyze:
+    name: Analyze
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

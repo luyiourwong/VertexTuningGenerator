@@ -1,20 +1,52 @@
-name: Deploy to GitHub Pages
+name: Analyze and Deploy main branch
 on:
   push:
     branches: [ main ]
 
 jobs:
-  wait-for-sonar:
+  analyze:
+    name: Analyze
     runs-on: ubuntu-latest
     steps:
-      - name: Wait for SonarCloud Quality Gate
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Clean npm cache
+        run: npm cache clean --force
+
+      - name: Remove existing files
+        run: |
+          rm -rf node_modules
+          rm -f package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install @rollup/rollup-linux-x64-gnu
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Check Quality Gate
         uses: sonarsource/sonarqube-quality-gate-action@master
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   deploy:
-    needs: wait-for-sonar
+    name: Deploy
+    needs: analyze
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
