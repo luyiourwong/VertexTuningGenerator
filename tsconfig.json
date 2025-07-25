@@ -12,8 +12,8 @@
     "types": ["node"]
   },
   "include": [
-    "src/**/*.vue",
-    "vite.config.ts"
+    "**/*.vue",
+    "**/*.ts"
   ],
   "exclude": ["node_modules", "dist"]
 }
