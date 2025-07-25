@@ -1,7 +1,12 @@
 import type {Content, Tool} from '@google/genai';
 
 export interface Dataset {
-    system_instruction: Content;
+    id: string;
     contents: Content[];
-    tools: Tool[];
+}
+
+export interface DatasetExport {
+    system_instruction?: Content;
+    contents?: Content[];
+    tools?: Tool[];
 }
