@@ -15,7 +15,7 @@ A single page application for GCP VertexAI tuning dataset generator.
 
 ## Use online
 
-[Online Generator](https://www.example.com/)
+[Online Generator](https://luyiourwong.github.io/VertexTuningGenerator/)
 
 ## Development
 
