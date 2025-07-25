@@ -1,0 +1,47 @@
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  wait-for-sonar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for SonarCloud Quality Gate
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  deploy:
+    needs: wait-for-sonar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Clean npm cache
+        run: npm cache clean --force
+
+      - name: Remove existing files
+        run: |
+          rm -rf node_modules
+          rm -f package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install @rollup/rollup-linux-x64-gnu
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
