@@ -125,8 +125,9 @@ const updatePropertyName = (toolIndex: number, oldName: string, newName: string)
         <div class="space-y-4" v-if="tool.functionDeclarations?.[0]">
           <!-- Name -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">Name:</label>
+            <label :for="`tool-name-${toolIndex}`" class="block text-sm font-medium text-gray-700">Name:</label>
             <input
+                :id="`tool-name-${toolIndex}`"
                 v-model="tool.functionDeclarations[0].name"
                 type="text"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -135,8 +136,9 @@ const updatePropertyName = (toolIndex: number, oldName: string, newName: string)
 
           <!-- Description -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">Description:</label>
+            <label :for="`tool-desc-${toolIndex}`" class="block text-sm font-medium text-gray-700">Description:</label>
             <textarea
+                :id="`tool-desc-${toolIndex}`"
                 v-model="tool.functionDeclarations[0].description"
                 rows="3"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -146,7 +148,7 @@ const updatePropertyName = (toolIndex: number, oldName: string, newName: string)
           <!-- Properties -->
           <div>
             <div class="flex justify-between items-center mb-2">
-              <label class="block text-sm font-medium text-gray-700">Properties:</label>
+              <span class="block text-sm font-medium text-gray-700">Properties:</span>
               <button
                   @click="addProperty(toolIndex)"
                   class="px-2 py-1 text-sm text-white bg-green-600 rounded hover:bg-green-700"
@@ -177,8 +179,9 @@ const updatePropertyName = (toolIndex: number, oldName: string, newName: string)
 
               <div class="grid grid-cols-2 gap-2">
                 <div>
-                  <label class="block text-xs text-gray-600">Type:</label>
+                  <label :for="`prop-type-${toolIndex}-${propName}`" class="block text-xs text-gray-600">Type:</label>
                   <select
+                      :id="`prop-type-${toolIndex}-${propName}`"
                       v-model="prop.type"
                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   >
@@ -189,8 +192,9 @@ const updatePropertyName = (toolIndex: number, oldName: string, newName: string)
                   </select>
                 </div>
                 <div>
-                  <label class="block text-xs text-gray-600">Description:</label>
+                  <label :for="`prop-desc-${toolIndex}-${propName}`" class="block text-xs text-gray-600">Description:</label>
                   <input
+                      :id="`prop-desc-${toolIndex}-${propName}`"
                       v-model="prop.description"
                       type="text"
                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"

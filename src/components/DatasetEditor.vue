@@ -236,9 +236,14 @@ const setMessageType = (part: any, type: string) => {
                     :key="key"
                     class="space-y-2"
                 >
-                  <label class="block text-sm font-medium text-gray-700">{{ key }}:</label>
+                  <label :for="'input-' + key"
+                         class="block text-sm font-medium text-gray-700"
+                  >
+                    {{ key }}:
+                  </label>
                   <input
                       v-if="message.parts[0].functionCall.args"
+                      :id="'input-' + key"
                       type="text"
                       v-model="message.parts[0].functionCall.args[key]"
                       class="w-full p-2 text-sm border border-gray-300 rounded-md"
