@@ -1,7 +1,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=luyiourwong_VertexTuningGenerator&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=luyiourwong_VertexTuningGenerator)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=luyiourwong_VertexTuningGenerator&metric=coverage)](https://sonarcloud.io/summary/new_code?id=luyiourwong_VertexTuningGenerator)
 
-# VertexTuningGenerator
+# Vertex Tuning Generator / Editor
 
 A single page application for GCP VertexAI tuning dataset generator.
 
@@ -15,7 +15,19 @@ A single page application for GCP VertexAI tuning dataset generator.
 
 ## Use online
 
-[Online Generator](https://luyiourwong.github.io/VertexTuningGenerator/)
+[![pages-build-deployment](https://github.com/luyiourwong/VertexTuningGenerator/actions/workflows/pages/pages-build-deployment/badge.svg?branch=gh-pages)](https://github.com/luyiourwong/VertexTuningGenerator/actions/workflows/pages/pages-build-deployment)
+
+[Online Application on Github pages](https://luyiourwong.github.io/VertexTuningGenerator/)
+
+## Use local
+
+If you want to run the application locally, follow these steps:
+
+1. Go to the GitHub Pages deployment branch: [gh-pages branch](https://github.com/luyiourwong/VertexTuningGenerator/tree/gh-pages)
+2. Download or clone the contents of the branch to your local machine.
+3. Open the `index.html` file in your browser.
+
+> Note: No build steps or additional dependencies are required — the `gh-pages` branch contains fully built static files.
 
 ## Development
 
@@ -31,14 +43,8 @@ npm install
 npm run dev
 ```
 
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
 ### Test and coverage report
-report at ./coverage, sonar use ./coverage/lcov.info
+Report at `./coverage`, sonar will use the lcov on `./coverage/lcov.info`.
 ```sh
 npm run test:coverage
 ```
@@ -47,11 +53,41 @@ npm run test:coverage
 
 Contributions are welcome!
 
+Code must passed quality standards to process deploy.
+
+<details>
+<summary><strong>📋 Code Quality Standards</strong></summary>
+
+All pull requests must pass the following quality gates in SonarQube before being merged:
+
+- Reliability Rating: A
+- Security Rating: A
+- Maintainability Rating: A
+- Minimum coverage requirement: 80%
+- Maximum allowed duplicated code: 3%
+
+> Note: You can monitor the analysis results in the PR checks and on [SonarCloud](https://sonarcloud.io/project/pull_requests_list?id=luyiourwong_VertexTuningGenerator)
+</details>
+
+## GitHub Actions
+
+This repository has GitHub Actions configured to help maintain code quality and automate deployments:
+
+1. **Pull Requests to `main`**:
+    - Automatically trigger a SonarQube scan, unit test and generate a code coverage report.
+    - Gemini Code Assist bot will automatically review and comment on the pull request based on the scan results.
+
+2. **Pushes to `main`**:
+    - Automatically trigger a SonarQube scan, unit test and generate a code coverage report.
+    - If the quality gate passes, the site is automatically deployed to **GitHub Pages**.
+
 ## Links
 
 - [GitHub Repository](https://github.com/luyiourwong/VertexTuningGenerator)
 - [Issue Tracker](https://github.com/luyiourwong/VertexTuningGenerator/issues)
 - [CI/CD](https://github.com/luyiourwong/VertexTuningGenerator/actions)
+- [Sonarcloud](https://sonarcloud.io/project/overview?id=luyiourwong_VertexTuningGenerator)
+- [Github pages](https://luyiourwong.github.io/VertexTuningGenerator/)
 
 ## License
 
