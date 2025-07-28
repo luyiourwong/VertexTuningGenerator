@@ -10,16 +10,13 @@ const emit = defineEmits<{
   delete: []
 }>();
 
-function getNextId(datasets: Dataset[] | undefined): string {
+const getNextId = (datasets: Dataset[] | undefined): string => {
   if (!datasets || datasets.length === 0) return "1";
-
-  // 找出当前最大的数字 id
   const maxId = Math.max(...datasets.map(d => parseInt(d.id, 10)));
-  // 返回最大 id + 1 的字符串
   return (maxId + 1).toString();
-}
+};
 
-function createNewDataset() {
+const createNewDataset = () => {
   const newDataset: Dataset = {
     id: getNextId(datasets.value),
     contents: [{
@@ -39,22 +36,21 @@ function createNewDataset() {
   }
   selectedId.value = newDataset.id;
   emit('update', newDataset);
-}
+};
 
-function calculatePreview(dataset: Dataset): string {
+const calculatePreview = (dataset: Dataset): string => {
   if (!dataset.contents?.[0]?.parts?.[0]?.text) {
     return 'empty dataset';
   }
   return dataset.contents[0].parts[0].text;
-}
+};
 
-function copyDataset(event: Event, datasetToCopy: Dataset) {
-  // 阻止事件冒泡
+const copyDataset = (event: Event, datasetToCopy: Dataset) => {
   event.stopPropagation();
 
   const newDataset: Dataset = {
     id: getNextId(datasets.value),
-    contents: JSON.parse(JSON.stringify(datasetToCopy.contents)) // 深拷贝 contents
+    contents: JSON.parse(JSON.stringify(datasetToCopy.contents))
   };
 
   if (datasets.value) {
@@ -63,27 +59,24 @@ function copyDataset(event: Event, datasetToCopy: Dataset) {
     datasets.value = [newDataset];
   }
   emit('update', newDataset);
-}
+};
 
-function deleteDataset(event: Event, datasetToDelete: Dataset) {
-  // 阻止事件冒泡，避免触发 li 的点击事件
+const deleteDataset = (event: Event, datasetToDelete: Dataset) => {
   event.stopPropagation();
 
   if (!datasets.value) return;
 
-  // 找到要删除的数据集的索引
   const index = datasets.value.findIndex(d => d.id === datasetToDelete.id);
   if (index !== -1) {
-    // 从数组中删除该数据集
     datasets.value.splice(index, 1);
   }
   emit('delete');
-}
+};
 
-function handleSelect(dataset: Dataset) {
+const handleSelect = (dataset: Dataset) => {
   selectedId.value = dataset.id;
   emit('update', dataset);
-}
+};
 </script>
 
 <template>
