@@ -12,14 +12,14 @@ import {downloadJsonl} from "@/utils/datasetExporter";
 const systemInstruction = ref<string | null>(null);
 const tools = ref<Tool[]>([]);
 const datasets = ref<Dataset[]>([]);
-const selectedDataset = ref<Dataset | null>(null);
+const selectedDataset = ref<Dataset | undefined>(undefined);
 
 const switchDataset = (dataset: Dataset) => {
   selectedDataset.value = dataset;
 };
 
 const clearSelectedDataset = () => {
-  selectedDataset.value = null;
+  selectedDataset.value = undefined;
 }
 
 const handleImport = async () => {
@@ -35,6 +35,7 @@ const handleImport = async () => {
       try {
         const importedJsonl = await importJsonlFile(file);
         systemInstruction.value = importedJsonl[0]?.system_instruction?.parts?.[0]?.text || null;
+        tools.value = importedJsonl[0]?.tools || [];
         clearSelectedDataset();
         datasets.value = convertRawDatasets(importedJsonl);
       } catch (error) {
@@ -47,7 +48,6 @@ const handleImport = async () => {
     console.error('Import error: ', error);
     alert('Import error');
   }
-  console.log(datasets.value);
 };
 
 const handleExport = () => {
@@ -129,7 +129,8 @@ const handleExport = () => {
 
       <!-- Dataset.contents Editor -->
       <DatasetEditor
-          v-model="selectedDataset"
+          v-model:dataset="selectedDataset"
+          v-model:tools="tools"
       />
     </main>
   </div>
