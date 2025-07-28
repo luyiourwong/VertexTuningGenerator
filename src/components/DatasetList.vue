@@ -23,6 +23,7 @@ function createNewDataset() {
   const newDataset: Dataset = {
     id: getNextId(datasets.value),
     contents: [{
+      role: "user",
       parts: [
         {
           text: "new dataset",
@@ -36,6 +37,7 @@ function createNewDataset() {
   } else {
     datasets.value = [newDataset];
   }
+  selectedId.value = newDataset.id;
   emit('update', newDataset);
 }
 
@@ -96,7 +98,7 @@ function handleSelect(dataset: Dataset) {
       </button>
       <span class="text-sm text-gray-600">(Size: {{ datasets?.length || 0 }})</span>
     </div>
-    <div class="h-64 mt-2 overflow-y-auto border border-gray-300 rounded-md">
+    <div class="h-128 mt-2 overflow-y-auto border border-gray-300 rounded-md">
       <ul>
         <li
             v-for="dataset in datasets" :key="dataset.id"

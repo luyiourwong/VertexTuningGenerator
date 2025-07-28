@@ -17,6 +17,8 @@ const systemInstruction: ModelRef<Content | undefined> = defineModel<Content>();
         id="system-instruction"
         rows="3"
         class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        placeholder="not useable, still in development"
+        disabled
     />
   </div>
 </template>

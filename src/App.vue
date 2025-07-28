@@ -7,6 +7,7 @@ import DatasetList from "@/components/DatasetList.vue";
 import DatasetEditor from "@/components/DatasetEditor.vue";
 import type {Content, Tool} from "@google/genai";
 import {importJsonlFile} from "@/utils/datasetImporter";
+import {downloadJsonl} from "@/utils/datasetExporter";
 
 const systemInstruction = ref<Content | null>(null);
 const tools = ref<Tool[]>([]);
@@ -33,7 +34,8 @@ const handleImport = async () => {
 
       try {
         const importedDatasets = await importJsonlFile(file);
-        datasets.value = [...datasets.value, ...importedDatasets];
+        clearSelectedDataset();
+        datasets.value = importedDatasets;
       } catch (error) {
         alert('Import failed: ' + error);
       }
@@ -46,6 +48,20 @@ const handleImport = async () => {
   }
   console.log(datasets.value);
 };
+
+const handleExport = () => {
+  if (datasets.value.length === 0) {
+    alert('No dataset to export, please add some first.');
+    return;
+  }
+
+  try {
+    downloadJsonl(datasets.value, systemInstruction.value, tools.value);
+  } catch (error) {
+    console.error('Export error:', error);
+    alert('Export error');
+  }
+};
 </script>
 
 <template>
@@ -54,7 +70,6 @@ const handleImport = async () => {
     <header class="flex items-center justify-between p-4 bg-white border-b border-gray-200">
       <div class="flex items-center gap-6">
         <h1 class="text-xl font-bold">VertexAI Tuning dataset editor</h1>
-        <h2 class="text-red-600"> not useable, still in development </h2>
         <div class="flex items-center gap-4">
           <a href="https://github.com/luyiourwong/VertexTuningGenerator/"
              target="_blank"
@@ -79,11 +94,14 @@ const handleImport = async () => {
       <div class="flex space-x-2">
         <button
             @click="handleImport"
-            class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600"
+            class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 cursor-pointer"
         >
           Import
         </button>
-        <button class="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600">
+        <button
+            @click="handleExport"
+            class="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 cursor-pointer"
+        >
           Export
         </button>
       </div>
