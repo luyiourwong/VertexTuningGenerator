@@ -5,21 +5,21 @@ import SystemInstructionEditor from "@/components/SystemInstructionEditor.vue";
 import ToolEditor from "@/components/ToolEditor.vue";
 import DatasetList from "@/components/DatasetList.vue";
 import DatasetEditor from "@/components/DatasetEditor.vue";
-import type {Content, Tool} from "@google/genai";
-import {importJsonlFile} from "@/utils/datasetImporter";
+import type {Tool} from "@google/genai";
+import {convertRawDatasets, importJsonlFile} from "@/utils/datasetImporter";
 import {downloadJsonl} from "@/utils/datasetExporter";
 
-const systemInstruction = ref<Content | null>(null);
+const systemInstruction = ref<string | null>(null);
 const tools = ref<Tool[]>([]);
 const datasets = ref<Dataset[]>([]);
-const selectedDataset = ref<Dataset | null>(null);
+const selectedDataset = ref<Dataset | undefined>(undefined);
 
 const switchDataset = (dataset: Dataset) => {
   selectedDataset.value = dataset;
 };
 
 const clearSelectedDataset = () => {
-  selectedDataset.value = null;
+  selectedDataset.value = undefined;
 }
 
 const handleImport = async () => {
@@ -33,9 +33,11 @@ const handleImport = async () => {
       if (!file) return;
 
       try {
-        const importedDatasets = await importJsonlFile(file);
+        const importedJsonl = await importJsonlFile(file);
+        systemInstruction.value = importedJsonl[0]?.system_instruction?.parts?.[0]?.text || null;
+        tools.value = importedJsonl[0]?.tools || [];
         clearSelectedDataset();
-        datasets.value = importedDatasets;
+        datasets.value = convertRawDatasets(importedJsonl);
       } catch (error) {
         alert('Import failed: ' + error);
       }
@@ -46,7 +48,6 @@ const handleImport = async () => {
     console.error('Import error: ', error);
     alert('Import error');
   }
-  console.log(datasets.value);
 };
 
 const handleExport = () => {
@@ -128,7 +129,8 @@ const handleExport = () => {
 
       <!-- Dataset.contents Editor -->
       <DatasetEditor
-          v-model="selectedDataset"
+          v-model:dataset="selectedDataset"
+          v-model:tools="tools"
       />
     </main>
   </div>

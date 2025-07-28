@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import {ModelRef} from "vue";
-import type {Content} from "@google/genai";
 
-const systemInstruction: ModelRef<Content | undefined> = defineModel<Content>();
+const systemInstruction: ModelRef<string | undefined> = defineModel<string>();
 </script>
 
 <template>
@@ -15,10 +14,9 @@ const systemInstruction: ModelRef<Content | undefined> = defineModel<Content>();
     </label>
     <textarea
         id="system-instruction"
+        v-model="systemInstruction"
         rows="3"
         class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-        placeholder="not useable, still in development"
-        disabled
     />
   </div>
 </template>

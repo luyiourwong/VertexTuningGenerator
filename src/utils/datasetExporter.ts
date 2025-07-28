@@ -1,13 +1,17 @@
 import type { Dataset, DatasetExport } from '@/types/dataset';
-import type { Content, Tool } from '@google/genai';
+import type { Tool } from '@google/genai';
 
 export const exportToJsonl = (
     datasets: Dataset[],
-    systemInstruction: Content | null,
+    systemInstruction: string | null,
     tools: Tool[]
 ): string => {
     const exportData: DatasetExport[] = datasets.map(dataset => ({
-        system_instruction: systemInstruction || undefined,
+        system_instruction: systemInstruction?.trim()
+            ? {
+                parts: [{text: systemInstruction}]
+            }
+            : undefined,
         contents: dataset.contents,
         tools: tools.length > 0 ? tools : undefined
     }));
@@ -19,7 +23,7 @@ export const exportToJsonl = (
 
 export const downloadJsonl = (
     datasets: Dataset[],
-    systemInstruction: Content | null,
+    systemInstruction: string | null,
     tools: Tool[]
 ): void => {
     const jsonlContent = exportToJsonl(datasets, systemInstruction, tools);
