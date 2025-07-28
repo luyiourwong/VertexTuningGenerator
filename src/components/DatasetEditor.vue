@@ -11,7 +11,7 @@ const selectedDataset: ModelRef<Dataset | undefined> = defineModel<Dataset>();
         for="dataset-contents"
         class="block text-sm font-medium text-gray-700"
     >
-      Dataset.contents
+      Contents {{selectedDataset? ' ID: ' + selectedDataset.id : ''}}
     </label>
     <textarea
         id="dataset-contents"

@@ -6,6 +6,7 @@ import ToolEditor from "@/components/ToolEditor.vue";
 import DatasetList from "@/components/DatasetList.vue";
 import DatasetEditor from "@/components/DatasetEditor.vue";
 import type {Content, Tool} from "@google/genai";
+import {importJsonlFile} from "@/utils/datasetImporter";
 
 const systemInstruction = ref<Content | null>(null);
 const tools = ref<Tool[]>([]);
@@ -14,7 +15,37 @@ const selectedDataset = ref<Dataset | null>(null);
 
 const switchDataset = (dataset: Dataset) => {
   selectedDataset.value = dataset;
+};
+
+const clearSelectedDataset = () => {
+  selectedDataset.value = null;
 }
+
+const handleImport = async () => {
+  try {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.jsonl';
+
+    input.onchange = async (event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+
+      try {
+        const importedDatasets = await importJsonlFile(file);
+        datasets.value = [...datasets.value, ...importedDatasets];
+      } catch (error) {
+        alert('Import failed: ' + error);
+      }
+    };
+
+    input.click();
+  } catch (error) {
+    console.error('Import error: ', error);
+    alert('Import error');
+  }
+  console.log(datasets.value);
+};
 </script>
 
 <template>
@@ -46,7 +77,10 @@ const switchDataset = (dataset: Dataset) => {
         </div>
       </div>
       <div class="flex space-x-2">
-        <button class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600">
+        <button
+            @click="handleImport"
+            class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600"
+        >
           Import
         </button>
         <button class="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600">
@@ -71,6 +105,7 @@ const switchDataset = (dataset: Dataset) => {
       <DatasetList
           v-model="datasets"
           @update="switchDataset"
+          @delete="clearSelectedDataset"
       />
 
       <!-- Dataset.contents Editor -->
