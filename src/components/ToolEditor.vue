@@ -169,7 +169,7 @@ const updatePropertyName = (toolIndex: number, oldName: string, newName: string)
                 />
                 <button
                     @click="deleteProperty(toolIndex, propName)"
-                    class="text-red-600 hover:text-red-800"
+                    class="text-red-700 hover:text-red-800"
                 >
                   X
                 </button>
