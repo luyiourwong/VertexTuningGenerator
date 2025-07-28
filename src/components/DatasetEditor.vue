@@ -255,6 +255,20 @@ const setMessageType = (part: any, type: string) => {
 
             <!-- Function Response 类型 -->
             <div v-else-if="getMessageType(message.parts[0]) === 'functionResponse'">
+              <select
+                  v-model="(message.parts[0].functionResponse ??= { name: '', response: {} }).name"
+                  class="w-full p-2 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="">Select Function</option>
+                <option
+                    v-for="func in tools?.[0]?.functionDeclarations"
+                    :key="func.name"
+                    :value="func.name"
+                >
+                  {{ func.name }}
+                </option>
+              </select>
+              <div class="text-xs font-medium text-gray-500">Output:</div>
               <textarea
                   v-if="message.parts[0].functionResponse && message.parts[0].functionResponse.response"
                   v-model="message.parts[0].functionResponse.response.output"

@@ -86,7 +86,7 @@ describe('ToolEditor.vue', () => {
         await deleteButton.trigger('click')
 
         const tools = wrapper.props('modelValue') as Tool[]
-        expect(tools).toHaveLength(0)
+        expect(tools).toHaveLength(1)
     })
 
     it('添加属性测试', async () => {

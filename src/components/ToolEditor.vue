@@ -19,13 +19,13 @@ const typeEnum = {
 // 处理Raw模式的JSON内容
 const rawTools = computed({
   get: () => {
-    return JSON.stringify(tools.value?.map(tool => tool.functionDeclarations) || [], null, 2);
+    return JSON.stringify(tools.value || [], null, 2);
   },
   set: (value: string) => {
     try {
       const parsed = JSON.parse(value);
       if (Array.isArray(parsed)) {
-        tools.value = parsed.map(declarations => ({ functionDeclarations: declarations }));
+        tools.value = parsed;
       }
     } catch (e) {
       console.error('Invalid JSON format:', e);
@@ -35,32 +35,45 @@ const rawTools = computed({
 
 // 添加新工具
 const addTool = () => {
+  // 如果 tools.value 是 undefined，初始化它
   if (!tools.value) {
     tools.value = [];
   }
-  tools.value.push({
-    functionDeclarations: [{
-      name: '',
-      description: '',
-      parameters: {
-        type: typeEnum.OBJECT,
-        properties: {}
-      }
-    }]
+
+  // 如果沒有第一個 tool 對象，創建它
+  if (!tools.value[0]) {
+    tools.value[0] = {
+      functionDeclarations: []
+    };
+  }
+
+  // 如果 functionDeclarations 是 undefined，初始化它
+  if (!tools.value[0].functionDeclarations) {
+    tools.value[0].functionDeclarations = [];
+  }
+
+  // 添加新的函數聲明
+  tools.value[0].functionDeclarations.push({
+    name: '',
+    description: '',
+    parameters: {
+      type: typeEnum.OBJECT,
+      properties: {}
+    }
   });
 };
 
 // 删除工具
 const deleteTool = (index: number) => {
-  if (tools.value) {
-    tools.value.splice(index, 1);
+  if (tools.value?.[0]?.functionDeclarations) {
+    tools.value[0].functionDeclarations.splice(index, 1);
   }
 };
 
 // 添加新属性
 const addProperty = (toolIndex: number) => {
-  if (tools.value?.[toolIndex]?.functionDeclarations?.[0]?.parameters?.properties) {
-    const properties = tools.value[toolIndex].functionDeclarations[0].parameters.properties;
+  if (tools.value?.[0]?.functionDeclarations?.[toolIndex]?.parameters?.properties) {
+    const properties = tools.value[0].functionDeclarations[toolIndex].parameters.properties;
     const newPropName = `property${Object.keys(properties).length + 1}`;
     properties[newPropName] = {
       type: typeEnum.STRING,
@@ -71,15 +84,15 @@ const addProperty = (toolIndex: number) => {
 
 // 删除属性
 const deleteProperty = (toolIndex: number, propertyName: string) => {
-  if (tools.value?.[toolIndex]?.functionDeclarations?.[0]?.parameters?.properties) {
-    delete tools.value[toolIndex].functionDeclarations[0].parameters.properties[propertyName];
+  if (tools.value?.[0]?.functionDeclarations?.[toolIndex]?.parameters?.properties) {
+    delete tools.value[0].functionDeclarations[toolIndex].parameters.properties[propertyName];
   }
 };
 
 // 修改屬性名稱的方法
 const updatePropertyName = (toolIndex: number, oldName: string, newName: string) => {
-  if (tools.value?.[toolIndex]?.functionDeclarations?.[0]?.parameters?.properties) {
-    const properties = tools.value[toolIndex].functionDeclarations[0].parameters.properties;
+  if (tools.value?.[0]?.functionDeclarations?.[toolIndex]?.parameters?.properties) {
+    const properties = tools.value[0].functionDeclarations[toolIndex].parameters.properties;
     const propValue = properties[oldName];
     delete properties[oldName];
     properties[newName] = propValue;
@@ -110,7 +123,8 @@ const updatePropertyName = (toolIndex: number, oldName: string, newName: string)
     </div>
 
     <div v-if="isVisualMode">
-      <div v-for="(tool, toolIndex) in tools" :key="toolIndex"
+      <div v-for="(declaration, toolIndex) in tools?.[0]?.functionDeclarations"
+           :key="toolIndex"
            class="mb-6 p-4 border rounded-lg bg-gray-50">
         <div class="flex justify-between mb-4">
           <span class="text-sm font-medium">Tool {{ toolIndex + 1 }}</span>
@@ -122,13 +136,13 @@ const updatePropertyName = (toolIndex: number, oldName: string, newName: string)
           </button>
         </div>
 
-        <div class="space-y-4" v-if="tool.functionDeclarations?.[0]">
+        <div class="space-y-4">
           <!-- Name -->
           <div>
             <label :for="`tool-name-${toolIndex}`" class="block text-sm font-medium text-gray-700">Name:</label>
             <input
                 :id="`tool-name-${toolIndex}`"
-                v-model="tool.functionDeclarations[0].name"
+                v-model="declaration.name"
                 type="text"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
@@ -139,7 +153,7 @@ const updatePropertyName = (toolIndex: number, oldName: string, newName: string)
             <label :for="`tool-desc-${toolIndex}`" class="block text-sm font-medium text-gray-700">Description:</label>
             <textarea
                 :id="`tool-desc-${toolIndex}`"
-                v-model="tool.functionDeclarations[0].description"
+                v-model="declaration.description"
                 rows="3"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
@@ -157,8 +171,8 @@ const updatePropertyName = (toolIndex: number, oldName: string, newName: string)
               </button>
             </div>
 
-            <div v-if="tool.functionDeclarations[0].parameters"
-                 v-for="(prop, propName) in tool.functionDeclarations[0].parameters.properties"
+            <div v-if="declaration.parameters"
+                 v-for="(prop, propName) in declaration.parameters.properties"
                  :key="propName"
                  class="mt-2 p-3 border rounded bg-white">
               <div class="flex justify-between items-center mb-2">
