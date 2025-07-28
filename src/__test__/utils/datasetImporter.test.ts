@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import {importJsonlFile} from "@/utils/datasetImporter";
+import {convertRawDatasets, importJsonlFile} from "@/utils/datasetImporter";
 
 // 模擬 File 類
 class MockFile {
@@ -17,7 +17,7 @@ class MockFile {
 describe('importJsonlFile', () => {
     it('應該返回正確數量的數據集', async () => {
         const mockFileContent =
-            '{"contents":[{"role":"user","parts":[{"text":"any"}]}]}\n' +
+            '{"system_instruction":{"parts":[{"text":"123"}]},"contents":[{"role":"user","parts":[{"text":"new dataset"}]},{"role":"model","parts":[{"functionCall":{"name":"test","args":{"property1":"12333","property2":"12331"}}}]},{"role":"model","parts":[{"functionResponse":{"name":"","response":{"output":"44444"}}}]},{"role":"model","parts":[{"text":"hhh"}]}],"tools":[{"functionDeclarations":[{"name":"test","description":"1","parameters":{"type":"OBJECT","properties":{"property1":{"type":"STRING","description":"1"},"property2":{"type":"NUMBER","description":"2"}}}}]}]}\n' +
             '{"contents":[{"role":"model","parts":[{"text":"any"}]}]}\n' +
             '{"contents":[{"role":"user","parts":[{"text":"any"}]}]}';
 
@@ -56,5 +56,34 @@ describe('importJsonlFile', () => {
 
         await expect(importJsonlFile(mockFile as unknown as File))
             .rejects.toThrow('Error reading file');
+    });
+});
+
+describe('convertRawDatasets', () => {
+    it('應該正確轉換數據集並分配ID', () => {
+        const mockDatasetExports = [
+            {
+                system_instruction: { parts: [{ text: "test" }] },
+                contents: [{ role: "user", parts: [{ text: "hello" }] }],
+                tools: []
+            },
+            {
+                system_instruction: { parts: [{ text: "test2" }] },
+                contents: [{ role: "model", parts: [{ text: "world" }] }],
+                tools: []
+            }
+        ];
+
+        const result = convertRawDatasets(mockDatasetExports);
+
+        expect(result).toHaveLength(2);
+        expect(result[0]).toEqual({
+            id: "0",
+            contents: mockDatasetExports[0].contents
+        });
+        expect(result[1]).toEqual({
+            id: "1",
+            contents: mockDatasetExports[1].contents
+        });
     });
 });
