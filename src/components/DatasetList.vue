@@ -11,7 +11,7 @@ const emit = defineEmits<{
 }>();
 
 const getNextId = (datasets: Dataset[] | undefined): string => {
-  if (!datasets || datasets.length === 0) return "1";
+  if (!datasets || datasets.length === 0) return "0";
   const maxId = Math.max(...datasets.map(d => parseInt(d.id, 10)));
   return (maxId + 1).toString();
 };

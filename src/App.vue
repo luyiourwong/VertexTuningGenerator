@@ -5,11 +5,11 @@ import SystemInstructionEditor from "@/components/SystemInstructionEditor.vue";
 import ToolEditor from "@/components/ToolEditor.vue";
 import DatasetList from "@/components/DatasetList.vue";
 import DatasetEditor from "@/components/DatasetEditor.vue";
-import type {Content, Tool} from "@google/genai";
-import {importJsonlFile} from "@/utils/datasetImporter";
+import type {Tool} from "@google/genai";
+import {convertRawDatasets, importJsonlFile} from "@/utils/datasetImporter";
 import {downloadJsonl} from "@/utils/datasetExporter";
 
-const systemInstruction = ref<Content | null>(null);
+const systemInstruction = ref<string | null>(null);
 const tools = ref<Tool[]>([]);
 const datasets = ref<Dataset[]>([]);
 const selectedDataset = ref<Dataset | null>(null);
@@ -33,9 +33,10 @@ const handleImport = async () => {
       if (!file) return;
 
       try {
-        const importedDatasets = await importJsonlFile(file);
+        const importedJsonl = await importJsonlFile(file);
+        systemInstruction.value = importedJsonl[0]?.system_instruction?.parts?.[0]?.text || null;
         clearSelectedDataset();
-        datasets.value = importedDatasets;
+        datasets.value = convertRawDatasets(importedJsonl);
       } catch (error) {
         alert('Import failed: ' + error);
       }
