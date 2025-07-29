@@ -13,21 +13,13 @@ A single page application for GCP VertexAI tuning dataset generator.
 
 [Fine tuning use cases](https://cloud.google.com/transform/top-five-gen-ai-tuning-use-cases-gemini-hundreds-of-orgs)
 
+[Sample dataset (by Google)](https://storage.googleapis.com/cloud-samples-data/ai-platform/generative_ai/gemini-1_5/text/sft_train_data.jsonl)
+
 ## Use online
 
 [![pages-build-deployment](https://github.com/luyiourwong/VertexTuningGenerator/actions/workflows/pages/pages-build-deployment/badge.svg?branch=gh-pages)](https://github.com/luyiourwong/VertexTuningGenerator/actions/workflows/pages/pages-build-deployment)
 
 [Online Application on Github pages](https://luyiourwong.github.io/VertexTuningGenerator/)
-
-## Use local
-
-If you want to run the application locally, follow these steps:
-
-1. Go to the GitHub Pages deployment branch: [gh-pages branch](https://github.com/luyiourwong/VertexTuningGenerator/tree/gh-pages)
-2. Download or clone the contents of the branch to your local machine.
-3. Open the `index.html` file in your browser.
-
-> Note: No build steps or additional dependencies are required — the `gh-pages` branch contains fully built static files.
 
 ## Development
 
