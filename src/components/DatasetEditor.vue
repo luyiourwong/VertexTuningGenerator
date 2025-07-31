@@ -36,8 +36,8 @@ const addMessage = () => {
   }
 
   // 根據上一則訊息的類型決定新增什麼訊息
-  if (lastMessage.role === 'user') {
-    // 如果上一則是user，新增model訊息
+  if (lastMessage.role === 'user' || lastMessage.parts?.[0]?.functionResponse) {
+    // 如果上一則是user/如果上一則是functionResponse，新增model訊息
     contents.push({
       role: 'model',
       parts: [{ text: '' }]
@@ -52,13 +52,6 @@ const addMessage = () => {
           response: { output: '' }
         }
       }]
-    });
-  }
-  else if (lastMessage.parts?.[0]?.functionResponse) {
-    // 如果上一則是functionResponse，新增model訊息
-    contents.push({
-      role: 'model',
-      parts: [{ text: '' }]
     });
   }
   else {
