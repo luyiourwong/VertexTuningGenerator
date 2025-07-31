@@ -13,7 +13,7 @@ export const exportToJsonl = (
             }
             : undefined,
         contents: dataset.contents,
-        tools: tools.length > 0 ? tools : undefined
+        tools: tools?.[0]?.functionDeclarations?.length ? tools : undefined
     }));
 
     return exportData

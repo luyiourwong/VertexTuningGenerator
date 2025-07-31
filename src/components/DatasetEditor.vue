@@ -16,14 +16,49 @@ const deleteMessage = (index: number) => {
 
 // 添加新消息的方法
 const addMessage = () => {
-  if (selectedDataset.value) {
-    selectedDataset.value.contents.push({
+  if (!selectedDataset.value) return;
+
+  // 確保contents存在
+  if (!selectedDataset.value.contents) {
+    selectedDataset.value.contents = [];
+  }
+
+  const contents = selectedDataset.value.contents;
+  const lastMessage = contents[contents.length - 1];
+
+  // 如果contents為空，新增role: 'user'的訊息
+  if (contents.length === 0) {
+    contents.push({
+      role: 'user',
+      parts: [{ text: '' }]
+    });
+    return;
+  }
+
+  // 根據上一則訊息的類型決定新增什麼訊息
+  if (lastMessage.role === 'user' || lastMessage.parts?.[0]?.functionResponse) {
+    // 如果上一則是user/如果上一則是functionResponse，新增model訊息
+    contents.push({
       role: 'model',
-      parts: [
-        {
-          text: ''
+      parts: [{ text: '' }]
+    });
+  }
+  else if (lastMessage.parts?.[0]?.functionCall) {
+    // 如果上一則有functionCall，新增functionResponse訊息
+    contents.push({
+      parts: [{
+        functionResponse: {
+          name: lastMessage.parts[0].functionCall.name,
+          response: { output: '' }
         }
-      ]
+      }]
+    });
+  }
+  else {
+    // 其他情況，新增user訊息
+    contents.push({
+      role: 'user',
+      parts: [{ text: '' }]
     });
   }
 };
@@ -138,6 +173,17 @@ const setMessageType = (part: any, type: string) => {
           <div class="flex items-center gap-4">
             <div class="text-xs font-medium text-gray-500">Role:</div>
             <div class="flex gap-4 text-sm">
+              <label class="inline-flex items-center">
+                <input
+                    type="radio"
+                    :name="`role-${index}`"
+                    :value="undefined"
+                    v-model="message.role"
+                    @change="delete message.role"
+                    class="text-indigo-600"
+                >
+                <span class="ml-2">None</span>
+              </label>
               <label class="inline-flex items-center">
                 <input
                     type="radio"

@@ -80,7 +80,7 @@ describe('DatasetEditor.vue', () => {
         expect(wrapper.text()).toContain('ID: 1')
     })
 
-    it('新增消息測試', async () => {
+    it('新增消息測試: 全空', async () => {
         const mockDataset: Dataset = {
             id: '1',
             contents: []
@@ -94,9 +94,64 @@ describe('DatasetEditor.vue', () => {
         })
 
         const addButton = wrapper.find('button.bg-emerald-600')
-        await addButton.trigger('click')
+        await addButton.trigger('click') // add user
 
         const dataset = wrapper.props('dataset') as Dataset
         expect(dataset.contents).toHaveLength(1)
+    })
+
+    it('新增消息測試: 有用戶訊息', async () => {
+        const mockDataset: Dataset = {
+            id: '1',
+            contents: [
+                {
+                    role: 'user',
+                    parts: [{ text: '' }]
+                }
+            ]
+        }
+
+        const wrapper = mount(DatasetEditor, {
+            props: {
+                dataset: mockDataset,
+                'onUpdate:dataset': (e: Dataset) => wrapper.setProps({ dataset: e })
+            }
+        })
+
+        const addButton = wrapper.find('button.bg-emerald-600')
+        await addButton.trigger('click') // add model
+        await addButton.trigger('click') // add user again
+
+        const dataset = wrapper.props('dataset') as Dataset
+        expect(dataset.contents).toHaveLength(3)
+    })
+
+    it('新增消息測試: 函數', async () => {
+        const mockDataset: Dataset = {
+            id: '1',
+            contents: [
+                {
+                    role: 'user',
+                    parts: [{ text: '' }]
+                },
+                {
+                    role: 'model',
+                    parts: [{ functionCall: { name: 'test', args: {} } }]
+                }
+            ]
+        }
+
+        const wrapper = mount(DatasetEditor, {
+            props: {
+                dataset: mockDataset,
+                'onUpdate:dataset': (e: Dataset) => wrapper.setProps({ dataset: e })
+            }
+        })
+
+        const addButton = wrapper.find('button.bg-emerald-600')
+        await addButton.trigger('click') // add functionResponse
+
+        const dataset = wrapper.props('dataset') as Dataset
+        expect(dataset.contents).toHaveLength(3)
     })
 })

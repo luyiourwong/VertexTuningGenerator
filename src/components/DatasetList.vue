@@ -58,6 +58,7 @@ const copyDataset = (event: Event, datasetToCopy: Dataset) => {
   } else {
     datasets.value = [newDataset];
   }
+  selectedId.value = newDataset.id;
   emit('update', newDataset);
 };
 
