@@ -142,6 +142,17 @@ const setMessageType = (part: any, type: string) => {
                 <input
                     type="radio"
                     :name="`role-${index}`"
+                    :value="undefined"
+                    v-model="message.role"
+                    @change="delete message.role"
+                    class="text-indigo-600"
+                >
+                <span class="ml-2">None</span>
+              </label>
+              <label class="inline-flex items-center">
+                <input
+                    type="radio"
+                    :name="`role-${index}`"
                     value="user"
                     v-model="message.role"
                     class="text-indigo-600"
