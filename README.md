@@ -13,7 +13,11 @@ A single page application for GCP VertexAI tuning dataset generator.
 
 [Fine tuning use cases](https://cloud.google.com/transform/top-five-gen-ai-tuning-use-cases-gemini-hundreds-of-orgs)
 
-[Sample dataset (by Google)](https://storage.googleapis.com/cloud-samples-data/ai-platform/generative_ai/gemini-1_5/text/sft_train_data.jsonl)
+## Sample dataset (from [tuning document](https://cloud.google.com/vertex-ai/generative-ai/docs/models/tune_gemini/text_tune#sample-datasets))
+
+[Gemini 2.0 training dataset](https://storage.googleapis.com/cloud-samples-data/ai-platform/generative_ai/gemini-2_0/text/sft_train_data.jsonl)
+
+[Gemini 2.0 validation dataset](https://storage.googleapis.com/cloud-samples-data/ai-platform/generative_ai/gemini-2_0/text/sft_validation_data.jsonl)
 
 ## Use online
 
