@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ModelRef, ref} from "vue";
 import {Dataset} from "@/types/dataset";
+import { deepCloneDataset } from "@/utils/deepClone";
 
 const datasets: ModelRef<Dataset[] | undefined> = defineModel<Dataset[]>();
 const selectedId = ref<string>();
@@ -50,7 +51,7 @@ const copyDataset = (event: Event, datasetToCopy: Dataset) => {
 
   const newDataset: Dataset = {
     id: getNextId(datasets.value),
-    contents: JSON.parse(JSON.stringify(datasetToCopy.contents))
+    contents: deepCloneDataset(datasetToCopy).contents
   };
 
   if (datasets.value) {
